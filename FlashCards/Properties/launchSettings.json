@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FlashCards": {
+      "commandName": "Project",
+      "workingDirectory": "F:\\Repos\\FlashCards\\FlashCards"
+    }
+  }
+}
