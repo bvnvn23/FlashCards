@@ -22,6 +22,8 @@ namespace FlashCards
         {
             [Description("Create Stack")]
             CreateStack,
+            [Description("View Stacks")]
+            ViewStacks,
             [Description("Edit Stack")]
             EditStack,
             [Description("Delete Stack")]
@@ -34,6 +36,8 @@ namespace FlashCards
         {
             [Description("Create Flash Card")]
             CreateFlashCard,
+            [Description("View Flash Cards")]
+            ViewFlashCards,
             [Description("Edit Flash Card")]
             EditFlashCard,
             [Description("Delete Flash Card")]

@@ -13,15 +13,13 @@ namespace FlashCards.Models
         public string Front { get; set; }
         public string Back { get; set; }
 
-        public string Name { get; set; }
-        
-        public FlashCard(int id, int stackID, string front, string back, string name)
+       
+        public FlashCard(int id, int stackID, string front, string back)
         {
             Id = id;
             StackID = stackID;
             Front = front;
             Back = back;
-            Name = name;
         }
     }
 }

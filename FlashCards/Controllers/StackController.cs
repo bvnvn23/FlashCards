@@ -8,24 +8,33 @@ namespace FlashCards.Controllers
 {
     static class StackController
     {
-        const string databaseConnection = "Server=localhost;Database=FlashCards;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
 
         public static async Task InsertStack(string nameInput)
         {
-            await using var connection = new SqlConnection(databaseConnection);
+            await using var connection = new SqlConnection(Consts.databaseConnection);
+            var checkSql = $"SELECT * FROM Stacks WHERE Name = '{nameInput}'";
+            var checkStack = await connection.QueryFirstOrDefaultAsync<Stacks>(checkSql);
+            if (checkStack != null)
+            {
+                AnsiConsole.MarkupLine("[red]Stack already exists! Press enter to continue...[/]");
+                Console.ReadKey();
+                return;
+            }
+
             var sql = $"INSERT INTO Stacks (Name) VALUES ('{nameInput}')";
             await connection.ExecuteAsync(sql);
         }
 
         public static async Task EditStack()
         {
-            await using var connection = new SqlConnection(databaseConnection);
+            await using var connection = new SqlConnection(Consts.databaseConnection);
             var sql = "SELECT * FROM Stacks";
             var stacks = await connection.QueryAsync<Stacks>(sql);
 
             if (!stacks.Any())
             {
-                AnsiConsole.MarkupLine("[red]No stacks to edit.[/]");
+                AnsiConsole.MarkupLine("[red]No stacks to edit. Press enter to continue...[/]");
+                Console.ReadKey();
                 return;
             }
 
@@ -44,10 +53,36 @@ namespace FlashCards.Controllers
             AnsiConsole.MarkupLine("[green]Press any key to return to the main menu.[/]");
         }
 
+        public static async Task ViewStack()
+        {
+            await using var connection = new SqlConnection(Consts.databaseConnection);
+            var sql = "SELECT * FROM Stacks";
+            await connection.ExecuteAsync(sql);
+            var stacks = await connection.QueryAsync<Stacks>(sql);
+            if (!stacks.Any())
+            {
+                AnsiConsole.MarkupLine("[red]No stacks to view.[/]");
+                return;
+            }
+
+            var table = new Table();
+            table.AddColumn("Id");
+            table.AddColumn("Name");
+
+            foreach (var stack in stacks)
+            {
+                table.AddRow(stack.Id.ToString(), stack.Name);
+            }
+            AnsiConsole.Render(table);
+
+
+            AnsiConsole.MarkupLine("[green]Press any key to return to the main menu.[/]");
+            Console.ReadKey();
+        }   
 
         public static async Task DeleteStack()
         {
-            await using var connection = new SqlConnection(databaseConnection);
+            await using var connection = new SqlConnection(Consts.databaseConnection);
             var sql = "SELECT * FROM Stacks";
             var stacks = await connection.QueryAsync<Stacks>(sql);
             if (!stacks.Any())
@@ -66,6 +101,7 @@ namespace FlashCards.Controllers
             await connection.ExecuteAsync(deleteSql);
             AnsiConsole.MarkupLine("[green]Stack deleted successfully![/]");
             AnsiConsole.MarkupLine("[green]Press any key to return to the main menu.[/]");
+            Console.ReadKey();
         }
 
     }

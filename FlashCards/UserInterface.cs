@@ -43,8 +43,10 @@ namespace FlashCards
                     await ManageFlashCardsMenu();
                     break;
                 case Enums.MenuChoices.Study:
+                    await StudyController.StartStudy();
                     break;
                 case Enums.MenuChoices.ViewStudySessionHistory:
+                    await StudyController.ViewStudyHiostry();
                     break;
                 case Enums.MenuChoices.Exit:
                     Environment.Exit(0);
@@ -74,6 +76,9 @@ namespace FlashCards
                 case Enums.ManageStacksChoices.EditStack:
                     await StackController.EditStack();
                     break;
+                case Enums.ManageStacksChoices.ViewStacks:
+                    await StackController.ViewStack();
+                    break;
                 case Enums.ManageStacksChoices.DeleteStack:
                     await StackController.DeleteStack();
                     break;
@@ -98,8 +103,12 @@ namespace FlashCards
             switch (menu)
             {
                 case Enums.ManageFlashCardsChoices.CreateFlashCard:
+                    await FlashCardsController.AddFlashCard();
                     break;
                 case Enums.ManageFlashCardsChoices.EditFlashCard:
+                    break;
+                case Enums.ManageFlashCardsChoices.ViewFlashCards:
+                    await FlashCardsController.ViewFlashCard();
                     break;
                 case Enums.ManageFlashCardsChoices.DeleteFlashCard:
                     break;

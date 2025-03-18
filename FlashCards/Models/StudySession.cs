@@ -8,14 +8,14 @@ namespace FlashCards.Models
 {
     class StudySession
     {
-        public int Id { get; set; }
+        public int StackId { get; set; }
         public int Score { get; set; }
         public DateTime Date { get; set; }
 
 
-        public StudySession (int id, int score, DateTime date)
+        public StudySession (int stackId, int score, DateTime date)
         {
-            Id = id;
+            StackId = stackId;
             Score = score;
             Date = date;
         } 

@@ -8,7 +8,6 @@ namespace FlashCards.Controllers
     {
 
         const string connectionString = "Server=localhost;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
-        const string databaseConnection = "Server=localhost;Database=FlashCards;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True";
 
         public static async Task CreateDatabase()
         {
@@ -21,34 +20,35 @@ namespace FlashCards.Controllers
 
         public static async Task CreateTables()
         {
-            await using var connection = new SqlConnection(databaseConnection);
+            await using var connection = new SqlConnection(Consts.databaseConnection);
             var sql = @"
-                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Stacks')
-                CREATE TABLE Stacks
-                (
-                    Id INT PRIMARY KEY IDENTITY,
-                    Name NVARCHAR(100) NOT NULL
-                )
-                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'FlashCards') AND EXISTS (SELECT * FROM sys.tables WHERE name = 'Stacks')
-                CREATE TABLE FlashCards
-                (
-                    Id INT PRIMARY KEY IDENTITY,
-                    StackId INT NOT NULL,
-                    Front NVARCHAR(1000) NOT NULL,
-                    Back NVARCHAR(1000) NOT NULL,
-                    FOREIGN KEY (StackId) REFERENCES Stacks(Id) ON DELETE CASCADE
-                )
-               
-                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StudySessionHistory')
-                CREATE TABLE StudySessionHistory
-                (
-                    Id INT PRIMARY KEY IDENTITY,
-                    StackId INT NOT NULL,
-                    Date DATETIME NOT NULL,
-                    FOREIGN KEY (StackId) REFERENCES Stacks(Id)
-                )
-            ";
+            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Stacks')
+            CREATE TABLE Stacks
+    (
+        Id INT PRIMARY KEY IDENTITY,
+        Name NVARCHAR(100) NOT NULL
+    )
+    
+    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'FlashCards') AND EXISTS (SELECT * FROM sys.tables WHERE name = 'Stacks')
+    CREATE TABLE FlashCards
+    (
+        Id INT PRIMARY KEY IDENTITY,
+        StackId INT NOT NULL,
+        Front NVARCHAR(1000) NOT NULL,
+        Back NVARCHAR(1000) NOT NULL,
+        FOREIGN KEY (StackId) REFERENCES Stacks(Id) ON DELETE CASCADE
+    )
 
+    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StudySessionHistory')
+    CREATE TABLE StudySessionHistory
+    (
+        Id INT PRIMARY KEY IDENTITY,
+        StackId INT NOT NULL,
+        Score INT NOT NULL,
+        Date DATETIME NOT NULL,
+        FOREIGN KEY (StackId) REFERENCES Stacks(Id) ON DELETE CASCADE
+    )
+";
             await connection.ExecuteAsync(sql);
         }
 
